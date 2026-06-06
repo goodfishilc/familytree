@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>族譜製作系統</title>
+
+<style>
+body{
+    font-family: "Microsoft JhengHei", sans-serif;
+    margin:20px;
+}
+
+h1{
+    text-align:center;
+}
+
+.control-panel{
+    border:1px solid #ccc;
+    padding:15px;
+    margin-bottom:20px;
+    border-radius:10px;
+}
+
+input{
+    padding:5px;
+    margin:5px;
+}
+
+button{
+    padding:8px 15px;
+    margin:5px;
+    cursor:pointer;
+}
+
+#tree{
+    text-align:center;
+}
+
+.tree ul{
+    padding-top:20px;
+    position:relative;
+    display:flex;
+    justify-content:center;
+}
+
+.tree li{
+    list-style:none;
+    text-align:center;
+    position:relative;
+    padding:20px 10px 0 10px;
+}
+
+.tree li::before,
+.tree li::after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:50%;
+    border-top:2px solid #999;
+    width:50%;
+    height:20px;
+}
+
+.tree li::after{
+    right:auto;
+    left:50%;
+    border-left:2px solid #999;
+}
+
+.tree li:only-child::after,
+.tree li:only-child::before{
+    display:none;
+}
+
+.tree li:first-child::before{
+    display:none;
+}
+
+.tree li:last-child::after{
+    display:none;
+}
+
+.tree ul ul::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:50%;
+    border-left:2px solid #999;
+    width:0;
+    height:20px;
+}
+
+.person{
+    border:1px solid #666;
+    padding:8px 15px;
+    display:inline-block;
+    border-radius:8px;
+    background:#f5f5f5;
+    min-width:100px;
+}
+
+@media print{
+    .control-panel{
+        display:none;
+    }
+
+    button{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>家族族譜</h1>
+
+<div class="control-panel">
+
+    <h3>建立祖先</h3>
+    <input type="text" id="rootName" placeholder="輸入祖先姓名">
+    <button onclick="createRoot()">建立族譜</button>
+
+    <hr>
+
+    <h3>新增家族成員</h3>
+
+    <label>父母姓名：</label>
+    <input type="text" id="parentName">
+
+    <label>子女姓名：</label>
+    <input type="text" id="childName">
+
+    <button onclick="addChild()">新增子女</button>
+
+    <button onclick="window.print()">列印族譜</button>
+
+</div>
+
+<div id="tree" class="tree"></div>
+
+<script>
+
+let familyData = {};
+
+function createRoot(){
+
+    const name = document.getElementById("rootName").value.trim();
+
+    if(!name){
+        alert("請輸入祖先姓名");
+        return;
+    }
+
+    familyData = {
+        name:name,
+        children:[]
+    };
+
+    renderTree();
+}
+
+function addChild(){
+
+    const parentName =
+        document.getElementById("parentName").value.trim();
+
+    const childName =
+        document.getElementById("childName").value.trim();
+
+    if(!parentName || !childName){
+        alert("請完整輸入資料");
+        return;
+    }
+
+    const parent = findPerson(familyData,parentName);
+
+    if(!parent){
+        alert("找不到父母姓名");
+        return;
+    }
+
+    parent.children.push({
+        name:childName,
+        children:[]
+    });
+
+    renderTree();
+}
+
+function findPerson(node,name){
+
+    if(node.name === name){
+        return node;
+    }
+
+    for(let child of node.children){
+
+        const found = findPerson(child,name);
+
+        if(found){
+            return found;
+        }
+    }
+
+    return null;
+}
+
+function buildTree(node){
+
+    let html = `
+    <li>
+        <div class="person">${node.name}</div>
+    `;
+
+    if(node.children.length > 0){
+
+        html += "<ul>";
+
+        node.children.forEach(child=>{
+            html += buildTree(child);
+        });
+
+        html += "</ul>";
+    }
+
+    html += "</li>";
+
+    return html;
+}
+
+function renderTree(){
+
+    if(!familyData.name){
+        return;
+    }
+
+    document.getElementById("tree").innerHTML =
+        `<ul>${buildTree(familyData)}</ul>`;
+}
+
+</script>
+
+</body>
+</html>
