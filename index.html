@@ -294,7 +294,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>旋譜</h1>
+        <h1>族譜</h1>
         <p class="subtitle">快速存取所有網頁</p>
         
         <div class="repo-info">
@@ -318,7 +318,7 @@
                 <input type="text" id="newLinkTitle" placeholder="連結標題">
             </div>
             <div class="form-group">
-                <input type="text" id="newLinkUrl" placeholder="輸入完整 URL (例如: https://goodfishilc.github.io/singlesubject/example.html)">
+                <input type="text" id="newLinkUrl" placeholder="輸入完整 URL (例如: https://goodfishilc.github.io/familytree/example.html)">
             </div>
             <div class="form-group">
                 <input type="text" id="newLinkCategory" placeholder="分類 (選填)">
@@ -337,9 +337,9 @@
 
     <script>
         // 本地存儲 key
-        const STORAGE_KEY = 'singlesubject_links';
-        const GITHUB_PAGES_BASE = 'https://goodfishilc.github.io/singlesubject/';
-        const GITHUB_API_BASE = 'https://api.github.com/repos/goodfishilc/singlesubject/contents';
+        const STORAGE_KEY = 'familytree_links';
+        const GITHUB_PAGES_BASE = 'https://goodfishilc.github.io/familytree/';
+        const GITHUB_API_BASE = 'https://api.github.com/repos/goodfishilc/familytree/contents';
         
         // 初始化應用
         function initApp() {
